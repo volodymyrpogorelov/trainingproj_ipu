@@ -1,9 +1,7 @@
 package model;
 
-import java.io.File;
 import java.lang.reflect.*;
 import java.sql.*;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -37,20 +35,16 @@ public class DAO <T> {
             res = new LinkedList<>();
             while(resultSet.next()){
                 T instance = cl.newInstance();
-                for(int i = 0; i < fields.length; i++) {
-                    String fName=fields[i].getName();
+                for (Field field : fields) {
+                    String fName = field.getName();
                     Object obj = resultSet.getObject(fName);
-                    fields[i].setAccessible(true);
-                    fields[i].set(instance, obj);
-                    fields[i].setAccessible(false);
+                    field.setAccessible(true);
+                    field.set(instance, obj);
+                    field.setAccessible(false);
                 }
                 res.add(instance);
             }
-        } catch (SQLException e) {  // ASK: WHERE SHOULD I HANDLE EXCEPTIONS?
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
+        } catch (SQLException | IllegalAccessException | InstantiationException e) {  // ASK: WHERE SHOULD I HANDLE EXCEPTIONS?
             e.printStackTrace();
         }
 
@@ -61,19 +55,19 @@ public class DAO <T> {
         StringBuilder values = new StringBuilder("(");
         StringBuilder names = new StringBuilder("(");
 
-        for(int i = 0; i < fieldsWithoutPk.length; i++) {
-            fieldsWithoutPk[i].setAccessible(true);
-            names.append(fieldsWithoutPk[i].getName());
+        for (Field aFieldsWithoutPk : fieldsWithoutPk) {
+            aFieldsWithoutPk.setAccessible(true);
+            names.append(aFieldsWithoutPk.getName());
             names.append(",");
             try {
                 values.append("'");
-                values.append(fieldsWithoutPk[i].get(obj).toString());
+                values.append(aFieldsWithoutPk.get(obj).toString());
                 values.append("'");
                 values.append(",");
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
-            }finally {
-                fieldsWithoutPk[i].setAccessible(false);
+            } finally {
+                aFieldsWithoutPk.setAccessible(false);
             }
         }
         values.deleteCharAt(values.length() - 1); // Removes last unneeded ','
@@ -92,7 +86,7 @@ public class DAO <T> {
 
     public boolean updateObject(T obj) { // UPDATES OBJECT BY PrimaryKey
         Field pkField = fields[pkInd];
-        Object pk = null;
+        Object pk;
         try {
             pkField.setAccessible(true);
             pk = pkField.get(obj);
@@ -130,18 +124,26 @@ public class DAO <T> {
 
     }
 
-    public boolean deleteObject(T obj) { // DELETES OBJECT BY PrimaryKey
+    public boolean deleteObject(T obj) { // DELETES table row by PrimaryKey
         Field idField = fields[pkInd];
         try {
             idField.setAccessible(true);
             int id = idField.getInt(obj);
             idField.setAccessible(false);
             String query = String.format("DELETE FROM %s WHERE ID = %s", tblName, id);
-            System.out.println(query);
             Statement stmt = connection.createStatement();
             return stmt.execute(query);
-        } catch (IllegalAccessException e) {
+        } catch (IllegalAccessException | SQLException e) {
             e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean deleteRow(String fieldName, Object obj){ // DELETES all rows
+        String query = String.format("DELETE FROM %s WHERE %s = '%s'", tblName, fieldName, obj);
+        try {
+            Statement stmt = connection.createStatement();
+            return stmt.execute(query);
         } catch (SQLException e) {
             e.printStackTrace();
         }
