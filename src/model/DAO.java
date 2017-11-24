@@ -143,6 +143,7 @@ public class DAO <T> {
         String query = String.format("DELETE FROM %s WHERE %s = '%s'", tblName, fieldName, obj);
         try {
             Statement stmt = connection.createStatement();
+            System.out.println(query);
             return stmt.execute(query);
         } catch (SQLException e) {
             e.printStackTrace();

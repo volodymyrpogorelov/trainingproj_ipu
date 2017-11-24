@@ -2,16 +2,20 @@ package model;
 
 @TableName(tablename="Abonente")
 public class Abonent {
+    @PrimaryKey
     private int id;
     private int uid;
-    private String phoneNum;
+    private String phone_Num;
     private float balance;
     private int status;
+
+    public Abonent() {
+    }
 
     public Abonent(int id, int uid, String phoneNum, float balance, int status) {
         this.id = id;
         this.uid = uid;
-        this.phoneNum = phoneNum;
+        this.phone_Num = phoneNum;
         this.balance = balance;
         this.status = status;
     }
@@ -33,11 +37,11 @@ public class Abonent {
     }
 
     public String getPhoneNum() {
-        return phoneNum;
+        return phone_Num;
     }
 
     public void setPhoneNum(String phoneNum) {
-        this.phoneNum = phoneNum;
+        this.phone_Num = phoneNum;
     }
 
     public float getBalance() {
@@ -54,5 +58,16 @@ public class Abonent {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return "Abonent{" +
+                "id=" + id +
+                ", uid=" + uid +
+                ", phone_Num='" + phone_Num + '\'' +
+                ", balance=" + balance +
+                ", status=" + status +
+                '}';
     }
 }

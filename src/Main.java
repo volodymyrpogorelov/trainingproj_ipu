@@ -1,3 +1,4 @@
+import model.Abonent;
 import model.DAO;
 import model.User;
 
@@ -15,6 +16,9 @@ public class Main {
         try {
             Class.forName("com.mysql.jdbc.Driver");
             Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+
+            /////////////////////// USER DAO //////////////////////////////////
+            System.out.println("User DAO tests:");
             DAO<User> userDAO = new DAO<>(conn, User.class);
             System.out.println(userDAO.getObjects());
             User Tom = new User(0,"Tom", "12");
@@ -31,6 +35,18 @@ public class Main {
             System.out.println("///////////////// After DeleteRow //////////////");
             userDAO.deleteRow("Login", "Tom");
             System.out.println(userDAO.getObjects());
+
+            //////////////////////////// Abonent Dao /////////////////////////////////
+            System.out.println("Abonent DAO tests:");
+            DAO<Abonent> abonentDAO = new DAO<>(conn, Abonent.class);
+            System.out.println(abonentDAO.getObjects());
+            Abonent abonent = new Abonent(0,1, "+38093412323", 45, 0);
+            abonentDAO.insertObject(abonent);
+            System.out.println("///////////////// After Insertion //////////////");
+            System.out.println(abonentDAO.getObjects());
+            System.out.println("///////////////// After DeleteRow //////////////");
+            abonentDAO.deleteRow("uid", "1");
+            System.out.println(abonentDAO.getObjects());
 
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
