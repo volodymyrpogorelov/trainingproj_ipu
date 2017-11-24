@@ -112,7 +112,6 @@ public class DAO <T> {
         }
         sb.deleteCharAt(sb.length() - 1);
         String query = String.format("UPDATE %s SET %s WHERE ID=%s", tblName, sb, pk);
-        System.out.println(query);
         try {
             Statement stmt = connection.createStatement();
             return stmt.execute(query);
@@ -143,7 +142,6 @@ public class DAO <T> {
         String query = String.format("DELETE FROM %s WHERE %s = '%s'", tblName, fieldName, obj);
         try {
             Statement stmt = connection.createStatement();
-            System.out.println(query);
             return stmt.execute(query);
         } catch (SQLException e) {
             e.printStackTrace();

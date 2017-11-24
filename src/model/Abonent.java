@@ -3,10 +3,15 @@ package model;
 @TableName(tablename="Abonente")
 public class Abonent {
     @PrimaryKey
+    @DAOAttribute
     private int id;
+    @DAOAttribute
     private int uid;
+    @DAOAttribute
     private String phone_Num;
+    @DAOAttribute
     private float balance;
+    @DAOAttribute
     private int status;
 
     public Abonent() {
